@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text,StyleSheet,TextInput,Button,Dimensions,Keyboard } from 'react-native';
-
+import {Keyboard} from 'react-native'
+import { Container,Content, Header, Left, Body, Right, Title, Text, ListItem, List,Input,Item,Button } from 'native-base';
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -16,52 +16,77 @@ export default class App extends Component {
     };
   }
   handleAddButton(){
-    const input = {id:this.state.datas.length + 1, name:this.state.toDoValue};
-    const newArray = this.state.datas.slice(); // Create a copy
-    newArray.push(input); // Push the object
-    this.setState({ datas: newArray });
+    if(this.state.toDoValue != ''){
+      const input = {id:this.state.datas.length + 1, name:this.state.toDoValue};
+      const newArray = this.state.datas.slice(); // Create a copy
+      newArray.push(input); // Push the object
+      this.setState({ datas: newArray });
 
-    this.state.toDoValue = ''
-    Keyboard.dismiss()
-    alert('Berhasil!')
+      this.state.toDoValue = ''
+      Keyboard.dismiss()
+      alert('Berhasil!')
+    }else{
+      alert('todo tidak boleh kosong!')
+    }
+
+  }
+
+  handleDelete(xId){
+    for (let i = 0; i < this.state.datas.length; i++) {
+      if (this.state.datas[i].id == (xId)) {
+        this.setState((state) => {
+          const list = state.datas.splice(i, 1)
+          return list
+        })
+      }
+    }
+  }
+  handleUbah(xId){
+    this.setState({ toDoValue: this.state.datas[xId].name })
+
   }
   render() {
     return (
-      <View style={styles.container}>
-        <View>
-          <TextInput 
-          value={this.state.toDoValue}
-          onChangeText={(text) => this.setState({ toDoValue: text })}
-          style={{ width:Dimensions.get('window').width,borderWidth: 1  }}
-          />
-          <Text></Text>
-          <Button
-            title="Add"
-            onPress={() => this.handleAddButton()}
-          />
-        </View>
-      {this.state.datas.map((item, key) => {
-        return (
-          <Text 
-          style={styles.item}
-          key={item.id}>{item.name}</Text>
-        );
-     })}
-     </View>
+      <Container>
+        <Header style={{marginBottom: 10,}}>
+          <Body>
+            <Title>Header</Title>
+          </Body>
+        </Header>
+
+        <Content>
+          <Item rounded style={{marginBottom: 10,}}>
+            <Input 
+            value={this.state.toDoValue}
+            onChangeText={(text) => this.setState({ toDoValue: text })}
+            placeholder='Type Here...'/>
+          </Item>          
+          <Button onPress={()=> this.handleAddButton()} style={{marginBottom: 10,}}>
+            <Text>Submit</Text>
+          </Button>
+          <List>
+          {this.state.datas.map((item, key) => {
+            return (
+              <ListItem>
+                <Left>
+                  <Text
+                  key={item.id}>
+                  {item.name}
+                  </Text>
+                </Left>
+                <Right>
+                  <Text onPress={() => this.handleUbah(item.id-1)}>[ubah]</Text>
+                </Right>
+                <Right>
+                  <Text onPress={() => this.handleDelete(item.id)}>[hapus]</Text>
+                </Right>
+              </ListItem>
+            );
+          })}       
+          </List>  
+        </Content>   
+      </Container>
     );
   }
 }
 
-const styles = StyleSheet.create({  
-      container:{
-        flex: 0,
-      },
-      textList:{
-        fontSize: 20,
-      },
-      item: {
-        borderWidth: 0.5,
-        padding: 15,
-      }
-
-})
