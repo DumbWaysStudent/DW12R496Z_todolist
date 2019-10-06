@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Keyboard, CheckBox,StyleSheet} from 'react-native'
+import {Icon} from 'react-native-elements'
 import { Container,Content, Header, Left, Body, Right, Title, Text, ListItem, List,Input,Item,Button,View } from 'native-base';
 export default class App extends Component {
   constructor(props) {
@@ -123,10 +124,16 @@ export default class App extends Component {
                   </View>
                 </Left>
                 <Right>
-                  <Text onPress={() => this.handleUbah(item.id-1)}>[ubah]</Text>
+                  <Icon
+                    onPress={() => this.handleUbah(item.id-1)}
+                    name='create'
+                    color='#00aced' /> 
                 </Right>
                 <Right>
-                  <Text onPress={() => this.handleDelete(item.id)}>[hapus]</Text>
+                  <Icon
+                    onPress={() => this.handleDelete(item.id)}
+                    name='trash'
+                    color='#00aced' />  
                 </Right>
               </ListItem>
             );
