@@ -7,15 +7,13 @@ export default class App extends Component {
     super(props);
     this.state = {
       datas: [
-        {id: 1, name:'work',isChecked: false},
-        {id: 2, name:'swim',isChecked: false},
-        {id: 3, name:'study',isChecked: true},
-        {id: 4, name:'sleep',isChecked: false},
-        {id: 5, name:'run',isChecked: false},
-        {id: 6, name:'eat',isChecked: false},
+        {id: 0, name:'work',isChecked: false},
+        {id: 1, name:'swim',isChecked: false},
+        {id: 2, name:'study',isChecked: false},
+        {id: 3, name:'sleep',isChecked: false},
+        {id: 4, name:'run',isChecked: false},
       ],
       toDoValue: '',
-      checked: true,
       btnTitle: 'Add',
       xId: '',
       
@@ -23,68 +21,64 @@ export default class App extends Component {
   }
   awal(){
     this.setState({ toDoValue: '', btnTitle: 'Add',xId:''})
+    Keyboard.dismiss()
   }
   handleAddButton(){
     if(this.state.btnTitle == 'Add'){
       if(this.state.toDoValue != ''){
-        const input = {
-          id:this.state.datas.length + 1, 
+        const input = [{
+          id:this.state.datas.length, 
           name:this.state.toDoValue,
           isChecked:false
-        };
-        const newArray = this.state.datas.slice(); // Create a copy
-        newArray.push(input); // Push the object
-        this.setState({ datas: newArray });
+        }];
+        this.setState({datas: [...this.state.datas, ...input]});
+
   
-        this.state.toDoValue = ''
-        Keyboard.dismiss()
         alert('Berhasil!')
       }else{
         alert('todo tidak boleh kosong!')
       }
     }else if(this.state.btnTitle == 'Edit'){
 
-      for (let i = 0; i < this.state.datas.length; i++) {
-        if (this.state.datas[i].id == (this.state.xId)) {
-          const input = {
-            id:this.state.xId, 
-            name:this.state.toDoValue,
-            isChecked:false
-          }; 
-          this.setState((state) => {
-            return state.datas[i] = input
-          })
-        }
-      }
-      this.awal()
-    }
+      let id = this.state.xId
+      let index = this.state.datas.findIndex((x) => x.id == id)
 
+      this.setState((state) => {
+        return state.datas[index].name = state.toDoValue
+      })
+  
+      
+    }
+    this.awal()
   }
 
   handleDelete(xId){
-    for (let i = 0; i < this.state.datas.length; i++) {
-      if (this.state.datas[i].id == (xId)) {
-        this.setState((state) => {
-          const list = state.datas.splice(i, 1)
-          return list
-        })
-      }
-    }
+    this.setState({datas: this.state.datas.filter((items) => {
+      return items.id != xId
+    })})    
+    this.awal()
   }
-  handleUbah(xId){
-    this.setState({ toDoValue: this.state.datas[xId].name, btnTitle: 'Edit',xId:xId+1 })
+  handleChange(xId){
+
+    this.setState({ 
+      toDoValue: this.state.datas[xId].name, 
+      btnTitle: 'Edit',
+      xId:xId
+    })
   }
   changeCheckBox(xId){
-    let check
+
+    let index = this.state.datas.findIndex((x) => x.id == xId)
+    
     this.setState((state)=>{
-      if(state.datas[xId].isChecked != true){
-        check = state.datas[xId].isChecked = true
+      if(state.datas[index].isChecked != true){
+        return state.datas[index].isChecked = true
       }else{
-        check = state.datas[xId].isChecked = false
+        return state.datas[index].isChecked = false
       } 
-      this.setState
-      return check
     })
+
+    this.awal()
   }
   
   render() {
@@ -92,7 +86,7 @@ export default class App extends Component {
       <Container>
         <Header style={styles.mb}>
           <Body>
-            <Title>Header</Title>
+            <Title>ToDo App</Title>
           </Body>
         </Header>
 
@@ -115,25 +109,25 @@ export default class App extends Component {
                     <View style={styles.row}>
                       <CheckBox
                         value={item.isChecked}
-                        onValueChange={() => this.changeCheckBox(item.id-1)}
+                        onValueChange={() => this.changeCheckBox(item.id)}
                       />
                       <Text
                       key={item.id}>
-                      {item.name}
+                      {item.name}{item.id}
                       </Text>
                     </View>
                   </View>
                 </Left>
                 <Right>
                   <Icon
-                    onPress={() => this.handleUbah(item.id-1)}
+                    onPress={() => this.handleChange(item.id)}
                     name='create'
                     color='#00aced' /> 
                 </Right>
                 <Right>
                   <Icon
                     onPress={() => this.handleDelete(item.id)}
-                    name='trash'
+                    name='delete'
                     color='#00aced' />  
                 </Right>
               </ListItem>
