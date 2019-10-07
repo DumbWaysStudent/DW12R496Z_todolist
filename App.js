@@ -12,6 +12,7 @@ export default class App extends Component {
         {id: 3, name:'study',isChecked: true},
         {id: 4, name:'sleep',isChecked: false},
         {id: 5, name:'run',isChecked: false},
+        {id: 6, name:'eat',isChecked: false},
       ],
       toDoValue: '',
       checked: true,
